@@ -1,17 +1,17 @@
 package com.amazon.ata.dynamodbscanandserialization.icecream.model;
 
+import com.amazon.ata.dynamodbscanandserialization.icecream.converter.SundaeListConverter;
 import com.amazon.ata.dynamodbscanandserialization.icecream.converter.ZonedDateTimeConverter;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIgnore;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverted;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,6 +23,7 @@ public class Receipt {
     private String customerId;
     private ZonedDateTime purchaseDate;
     private BigDecimal salesTotal;
+    private List<Sundae> sundaes;
 
     @DynamoDBHashKey(attributeName = "customerId")
     public String getCustomerId() {
@@ -52,10 +53,15 @@ public class Receipt {
         this.salesTotal = salesTotal;
     }
 
-    @DynamoDBIgnore
+   @DynamoDBAttribute(attributeName = "sundaes")
+   @DynamoDBTypeConverted(converter = SundaeListConverter.class)
     public List<Sundae> getSundaes() {
-        // TODO: updated this getter
-        return Collections.emptyList();
+
+        return new ArrayList<>(sundaes);
+    }
+
+    public void setSundaes(List<Sundae> sundaes) {
+        this.sundaes = new ArrayList<>(sundaes);
     }
 
     @Override
